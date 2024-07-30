@@ -1,6 +1,6 @@
 {
   "name": "nodeshoppro",
-  "version": "1.0.0",
+  "version": "1.1.0",
   "description": "NodeShopPro - E-commerce Backend com Node.js e Express",
   "main": "app.js",
   "scripts": {
