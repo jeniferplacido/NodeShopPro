@@ -19,6 +19,8 @@
   "homepage": "https://github.com/jeniferplacido/NodeShopPro#readme",
   "dependencies": {
     "express": "^4.19.2",
-    "fs": "^0.0.1-security"
+    "express-handlebars": "^7.1.3",
+    "fs": "^0.0.1-security",
+    "socket.io": "^4.7.5"
   }
 }
