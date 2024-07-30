@@ -1,0 +1,24 @@
+{
+  "name": "nodeshoppro",
+  "version": "1.0.0",
+  "description": "NodeShopPro - E-commerce Backend com Node.js e Express",
+  "main": "app.js",
+  "scripts": {
+    "start": "node app.js",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/jeniferplacido/NodeShopPro.git"
+  },
+  "author": "Jenifer Placido",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/jeniferplacido/NodeShopPro/issues"
+  },
+  "homepage": "https://github.com/jeniferplacido/NodeShopPro#readme",
+  "dependencies": {
+    "express": "^4.19.2",
+    "fs": "^0.0.1-security"
+  }
+}
