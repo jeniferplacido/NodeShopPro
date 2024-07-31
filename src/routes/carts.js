@@ -1,43 +1,63 @@
+
 const express = require('express');
 const router = express.Router();
+const Cart = require('../dao/models/cart');
+const Product = require('../dao/models/product');
 
-// Simulação de banco de dados
-let carts = [];
-
-// Rota para criar um novo carrinho
-router.post('/', (req, res) => {
-    const newCart = {
-        id: carts.length + 1,
-        products: []
-    };
-    carts.push(newCart);
-    res.status(201).json(newCart);
+// Exibir produtos em um carrinho específico
+router.get('/:cid', async (req, res) => {
+  try {
+    const cart = await Cart.findById(req.params.cid).populate('products.productId');
+    if (!cart) {
+      return res.status(404).json({ status: 'error', message: 'Cart not found' });
+    }
+    res.json(cart);
+  } catch (error) {
+    res.status(500).json({ status: 'error', message: error.message });
+  }
 });
 
-// Rota para listar os produtos de um carrinho
-router.get('/:cid', (req, res) => {
-    const cart = carts.find(c => c.id === parseInt(req.params.cid));
-    if (cart) {
-        res.json(cart.products);
-    } else {
-        res.status(404).send('Carrinho não encontrado');
-    }
+// Atualizar carrinho com uma matriz de produtos
+router.put('/:cid', async (req, res) => {
+  try {
+    const { products } = req.body;
+    await Cart.findByIdAndUpdate(req.params.cid, { products });
+    res.json({ status: 'success', message: 'Cart updated' });
+  } catch (error) {
+    res.status(500).json({ status: 'error', message: error.message });
+  }
 });
 
-// Rota para adicionar um produto a um carrinho
-router.post('/:cid/product/:pid', (req, res) => {
-    const cart = carts.find(c => c.id === parseInt(req.params.cid));
-    if (cart) {
-        const productIndex = cart.products.findIndex(p => p.productId === parseInt(req.params.pid));
-        if (productIndex !== -1) {
-            cart.products[productIndex].quantity += 1;
-        } else {
-            cart.products.push({ productId: parseInt(req.params.pid), quantity: 1 });
-        }
-        res.json(cart);
-    } else {
-        res.status(404).send('Carrinho não encontrado');
+// Atualizar a quantidade de um produto específico no carrinho
+router.put('/:cid/products/:pid', async (req, res) => {
+  try {
+    const { quantity } = req.body;
+    const cart = await Cart.findById(req.params.cid);
+    if (!cart) {
+      return res.status(404).json({ status: 'error', message: 'Cart not found' });
     }
+    
+    const productIndex = cart.products.findIndex(p => p.productId.toString() === req.params.pid);
+    if (productIndex === -1) {
+      return res.status(404).json({ status: 'error', message: 'Product not found in cart' });
+    }
+    
+    cart.products[productIndex].quantity = quantity;
+    await cart.save();
+    res.json({ status: 'success', message: 'Product quantity updated' });
+  } catch (error) {
+    res.status(500).json({ status: 'error', message: error.message });
+  }
+});
+
+// Deletar todos os produtos do carrinho
+router.delete('/:cid', async (req, res) => {
+  try {
+    await Cart.findByIdAndUpdate(req.params.cid, { products: [] });
+    res.json({ status: 'success', message: 'All products removed from cart' });
+  } catch (error) {
+    res.status(500).json({ status: 'error', message: error.message });
+  }
 });
 
 module.exports = router;
