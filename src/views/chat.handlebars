@@ -1,0 +1,32 @@
+<!-- src/views/chat.handlebars -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chat</title>
+</head>
+<body>
+    <h1>Chat</h1>
+    <div id="messages"></div>
+    <input type="text" id="user" placeholder="Seu email">
+    <input type="text" id="message" placeholder="Sua mensagem">
+    <button onclick="sendMessage()">Enviar</button>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        const socket = io();
+
+        socket.on('messages', messages => {
+            const messagesDiv = document.getElementById('messages');
+            messagesDiv.innerHTML = messages.map(msg => `<p>${msg.user}: ${msg.message}</p>`).join('');
+        });
+
+        function sendMessage() {
+            const user = document.getElementById('user').value;
+            const message = document.getElementById('message').value;
+            socket.emit('newMessage', { user, message });
+        }
+    </script>
+</body>
+</html>
